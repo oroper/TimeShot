@@ -2,7 +2,7 @@
 #define Salva_h
 
 #include "Arduino.h"
-#include <C:\Users\Nevio\Dropbox\timeShoot./EEPROM/EEPROM.h>
+#include <EEPROM.h>
 
 
 #define MAXEEPROMADDR E2END

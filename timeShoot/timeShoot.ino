@@ -3,8 +3,6 @@
 #include "Stato.h"
 #include "Salva.h"
 
-#include <LiquidCrystal.h>
-
 Monitor monitor;
 Stato stato;
 Encoder encoder;
