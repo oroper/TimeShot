@@ -1,3 +1,7 @@
+/*
+   This file contain the characters for starting screen
+*/
+
 #ifndef Boot_h
 #define Boot_h
 
@@ -70,4 +74,5 @@ static byte arrow[8] = {
 };
 
 #endif
+
 

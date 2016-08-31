@@ -2,6 +2,8 @@
 #define Stato_h
 
 #include "Arduino.h"
+#include "GlobalVal.h"
+#include "Salva.h"
 
 // stato 1:   menu principale          5 opzioni  codifica: 100
 // stato 2_1: menu foto al minuto      4 opzioni  codifica: 210
@@ -18,24 +20,33 @@
 #define S24 240
 #define S25 250
 #define S3 300
-#define LANGUAGES 2
 
 class Stato{
 
-  typedef struct Screen {
-    char first[4];
-    char second[4];
-  };
+  Salva salva; // object that rappresents the eeprom information storage
 
 public:
   Stato();
   void su();
   void giu();
-  byte getStato();
+  int getStato();
 
   void confirm();
   byte getCursor();
   String getPrint(int);
+
+  String getValue(int i);
+  String getValueS21(int i);
+  String getValueS22(int i);
+  float getValueF();
+  int getValueI();
+
+  String getString(int);
+
+  String getString(float);
+
+  byte getLanguage();
+  byte getEepromWrite();
 
   void stato1();
   void stato2_1();
@@ -47,23 +58,32 @@ public:
 
 private:
 
-  Screen screen = {"ER","ER"};
-
   int stato;
   byte cursore;
   byte options;
+  byte com = 0;
+  int comInt;
+  float comFloat;
+
+  void comPrev();
+  void comNext();
+  String getCommand();
+
+  void command21_1();
 
   void azzCursore();
   void setStato(int);
   
   String getPrintS1(int);
   String getPrintS21(int);
+  String getPrintS22(int);
 
   byte getOptions();
 
 };
 
 #endif
+
 
 
 

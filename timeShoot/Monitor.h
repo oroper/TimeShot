@@ -6,10 +6,13 @@
 #include "Stato.h"
 #include "Boot.h"
 #include "Languages.h"
+#include "GlobalVal.h"
 
 class Monitor {
 
+  // Inizialize the LCD
   LiquidCrystal lcd;
+  // Create a object Language
   Languages languages;
 
 public:
@@ -23,7 +26,8 @@ public:
 private:
   void boot();
   void printStato(Stato);
-  byte language;
+  const byte row = 2;       // contain the number of row of LCD
+  const byte col = 16;      // contain the number of colomn of LCD
 
 };
 
