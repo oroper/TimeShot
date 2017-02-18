@@ -54,13 +54,12 @@ float Salva::getPMin() {
 // Picture for minutes
 void Salva::setPMin(float v) {
   // verify if the recived value is inside of range
-  if (float(v) > 0 && float(v) < 25.5) {
+  if (float(v) < 0.1)
+    EEPROM.write(pMinAdd, byte(1));
+  else if (float(v) > 25.5)
+    EEPROM.write(pMinAdd, byte(255));
+  else
     EEPROM.write(pMinAdd, byte(v * 10));
-  }
-  // else write a defalult value
-  else { // For safety set a picture for minutes
-    EEPROM.write(pMinAdd, byte(10));
-  }
 }
 
 int Salva::getPMax1() {
@@ -71,6 +70,9 @@ int Salva::getPMax1() {
 void Salva::setPMax1(int v) {
   if (v > 2550) {
     EEPROM.write(pMax1Add, 255);
+  }
+  else if (v < 10) {
+    EEPROM.write(pMax1Add, 10);
   }
   else {
     // it is possible to register a value from 0 to 255, so we save the v/10
@@ -110,6 +112,9 @@ void Salva::setPMax2(int v) {
   if (v > 2550) {
     EEPROM.write(pMax2Add, 255);
   }
+  else if (v < 10) {
+    EEPROM.write(pMax2Add, 10);
+  }
   else {
     // it is possible to register a value from 0 to 255, so we save the v/10
     EEPROM.write(pMax2Add, byte(v / 10));
@@ -125,6 +130,9 @@ int Salva::getRealTime() {
 void Salva::setRealTime(int v) {
   if (v > 2550) {
     EEPROM.write(realTimeAdd, 255);
+  }
+  if (v < 10) {
+    EEPROM.write(realTimeAdd, 1);
   }
   else {
     // it is possible to register a value from 0 to 255, so we save the v/10
@@ -142,7 +150,12 @@ int Salva::getVideoTime() {
 
 // Time video desiderated
 void Salva::setVideoTime(int v) {
-  EEPROM.put(videoTimeAdd, v);
+  if (v < 5)
+    EEPROM.put(videoTimeAdd, 5);
+  else if (v > 600)
+    EEPROM.put(videoTimeAdd, 600);
+  else
+    EEPROM.put(videoTimeAdd, v);
 }
 
 // Number of fram in the viedo
