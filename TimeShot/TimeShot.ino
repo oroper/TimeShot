@@ -80,7 +80,7 @@ void loop() {
       }
     }
     stato.salvaVal(f);
-    stato.setStato(stato.getStato()/10*10);
+    stato.setStato(stato.getStato() / 10 * 10);
     aggiorna();
     delay(1000);
   }
