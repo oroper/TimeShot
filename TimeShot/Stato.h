@@ -31,79 +31,81 @@
 #define S241 241  // Modifica valroe durata AF
 #define S242 242  // Modifica valroe scatto
 
-class Stato{
+class Stato {
 
-  Salva salva; // object that rappresents the eeprom information storage
+    Salva salva; // object that rappresents the eeprom information storage
 
-public:
-  Stato();
-  void su();
-  void giu();
-  int getStato();
+  public:
+    Stato();
+    void su();
+    void giu();
+    int getStato();
 
-  void confirm();
-  byte getCursor();
-  int getPrint(int);
+    void confirm();
+    byte getCursor();
+    int getPrint(int);
 
-  float getValue(int);
-float getStartVal();
+    float getValue(int);
+    float getStartVal();
 
-float valSu(float f);
-float valGiu(float f);
+    float valSu(float f);
+    float valGiu(float f);
 
-  String getString(int);
+    String getString(int);
 
-  String getString(float);
+    String getString(float);
 
-  byte getLanguage();
-  byte getEepromWrite();
+    byte getLanguage();
+    byte getEepromWrite();
 
-  void stato1();
-  void stato2_1();
-  void stato2_2();
-  void stato2_3();
-  void stato2_4();
-  void stato2_5();
-  void stato3();
+    void stato1();
+    void stato2_1();
+    void stato2_2();
+    void stato2_3();
+    void stato2_4();
+    void stato2_5();
+    void stato3();
 
-  void salvaVal(float);
+    void salvaVal(float);
 
- float valSu();
- int getPos();
+    float valSu();
+    int getPos();
 
- void setStato(int);
+    void setStato(int);
 
-private:
+  private:
 
-  int stato;
-  byte cursore;
-  byte options;
-  byte com = 0;
-  int comInt;
-  float comFloat;
+    int stato;
+    byte cursore;
+    byte cursoreOld;
+    byte cursoreOld1;
+    byte options;
+    byte com = 0;
+    int comInt;
+    float comFloat;
 
-  void comPrev();
-  void comNext();
-  String getCommand();
+    void comPrev();
+    void comNext();
+    String getCommand();
 
-  void command21_1();
+    void command21_1();
 
-  void azzCursore();
-  
-  
-  int getPrintS1(int);
-  int getPrintS21(int);
-  int getPrintS22(int);
-  int getPrintS23(int);
-  int getPrintS24(int);
-  int getPrintS25(int);
+    void azzCursore();
 
-  float getValueS21(int);
-  float getValueS22(int);
-  float getValueS23(int);
-  float getValueS24(int);
 
-  byte getOptions();
+    int getPrintS1(int);
+    int getPrintS21(int);
+    int getPrintS22(int);
+    int getPrintS23(int);
+    int getPrintS24(int);
+    int getPrintS25(int);
+
+    float getValueS21(int);
+    float getValueS22(int);
+    float getValueS23(int);
+    float getValueS24(int);
+
+    byte getOptions();
 
 };
 

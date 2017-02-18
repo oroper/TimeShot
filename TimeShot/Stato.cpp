@@ -20,6 +20,8 @@ Stato::Stato() {
 
   // cursor on first voice
   cursore = 1;
+  cursoreOld = 1;
+  cursoreOld1 = 1;
 
   // get the number of voices in this menu
   options = getOptions();
@@ -41,11 +43,6 @@ void Stato::giu() {
   // if cursor is highest than the number of voices in menu set the first voice
   if (cursore > getOptions())
     cursore = 1;
-  //  }
-  /*
-    else {
-      comNext();
-    }*/
 }
 
 // Set the cursor to previous voice
@@ -72,9 +69,29 @@ byte Stato::getCursor() {
 // Set the code of status
 void Stato::setStato(int s) {
 
+  if (stato % 10 == 0) {
+    if (stato == S1) {
+      cursoreOld = cursore;
+    }
+    else {
+      cursoreOld1 = cursore;
+    }
+  }
+
   stato = s;
 
-  azzCursore();
+  if (stato % 10 == 0) {
+    if (stato == S1) {
+      cursore = cursoreOld;
+    }
+    else {
+      cursore = cursoreOld1;
+    }
+  }
+
+
+
+
 }
 
 // Clear the cursor value for change status
@@ -320,15 +337,18 @@ int Stato::getPrintS1(int i) {
           return 13;
         case 4:
           return 14;
+        default:
+          return 0;
       }
     case 5:
-    case 6:
       switch (i) {
         case 1:
           return 15;
-        case 2:
+        default:
           return 0;
       }
+    default:
+      return 0;
   }
 }
 
@@ -567,6 +587,22 @@ void Stato::salvaVal(float f) {
   switch (getStato()) {
     case S211:
       return salva.setPMin(f);
+    case S212:
+      return salva.setPMax1(int(f));
+    case S221:
+      return salva.setPEvery(int(f));
+    case S222:
+      return salva.setPMax2(int(f));
+    case S231:
+      return salva.setRealTime(int(f));
+    case S232:
+      return salva.setVideoTime(int(f));
+    case S233:
+      return salva.setFrames(byte(f));
+    case S241:
+      return salva.setAFTime(f);
+    case S242:
+      return salva.setShoottime(f);
     default:
       return 0;
   }
