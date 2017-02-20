@@ -19,7 +19,9 @@
 #define S23 230
 #define S24 240
 #define S25 250
-#define S3 300
+#define S31 310
+#define S32 320
+#define S33 330
 
 #define S211 211  // Modifica valore foto per minuto
 #define S212 212  // Modifica valore foto max1
@@ -66,12 +68,25 @@ class Stato {
     void stato2_5();
     void stato3();
 
+    void startPPM();    // foto al minuto
+    void startPEM();    // foto ogni x minuti
+    void startVideo();  // foto per video
+
     void salvaVal(float);
 
     float valSu();
     int getPos();
 
     void setStato(int);
+
+    void scattato();
+    boolean  getScattato();
+
+    int getStatoName();
+    unsigned int getCount();
+
+    void shooting();
+    unsigned int timing();
 
   private:
 
@@ -83,6 +98,14 @@ class Stato {
     byte com = 0;
     int comInt;
     float comFloat;
+
+    unsigned int start;   // Time di quando iniziato
+    unsigned int last;     // Ultimo scatto
+    unsigned int delta;   // ogni quanti milli secondi scattare
+    unsigned int count;   // Quante foto sono state fatte
+    unsigned int finish;  // quante foto da fare per terminare
+
+    boolean scatta = 0;
 
     void comPrev();
     void comNext();

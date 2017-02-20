@@ -114,7 +114,9 @@ byte Stato::getOptions() {
       return 3;
     case S25:
       return LANGUAGES + 1; // LANGUAGES is set in GlobalVal.h
-    case S3:
+    case S31:
+    case S32:
+    case S33:
       return 3;
   }
 }
@@ -140,8 +142,7 @@ void Stato::confirm() {
     case S25:
       stato2_5();
       break;
-    case S3:
-      stato3();
+    default:
       break;
   }
 }
@@ -361,7 +362,7 @@ void Stato::stato2_1() {
       setStato(S212);
       break;
     case 3:
-      //setStato(S1);
+      startPPM();
       break;
     case 4:
       setStato(S1);
@@ -382,7 +383,7 @@ void Stato::stato2_2() {
       setStato(S222);
       break;
     case 3:
-      //setStato(S1);
+      startPEM();
       break;
     case 4:
       setStato(S1);
@@ -404,7 +405,7 @@ void Stato::stato2_3() {
       setStato(S233);
       break;
     case 4:
-      //setStato(S1);
+      startVideo();
       break;
     case 5:
       setStato(S1);
@@ -606,5 +607,70 @@ void Stato::salvaVal(float f) {
     default:
       return 0;
   }
+}
+
+void Stato::startPPM() { // foto al minuto
+  setStato(S31);
+  start = millis();   // Time di quando iniziato
+  last = start;
+  delta = salva.getPMin() * 60000; // moltiplico un minuto per il valore di foto al minuto
+  count = 0;   // Quante foto sono state fatte
+  finish = salva.getPMax1();  // quante foto da fare per terminare
+}
+void Stato::startPEM() {   // foto ogni x minuti
+  setStato(S32);
+  start = millis();   // Time di quando iniziato
+  last = start;
+  delta = salva.getPEvery() * 60000; // moltiplico un minuto per il numero di minuti ogni quanto fare la foto
+  count = 0;   // Quante foto sono state fatte
+  finish = salva.getPMax2();  // quante foto da fare per terminare
+}
+
+void Stato::startVideo() { // foto per video
+  setStato(S33);
+  start = millis();   // Time di quando iniziato
+  last = start;
+  finish = int (salva.getVideoTime() * salva.getFrames());
+  delta = int (salva.getRealTime() * 60000 / finish);
+  count = 0;   // Quante foto sono state fatte
+}
+
+void Stato::shooting() {
+  if (millis() > last + delta) {
+    last = millis();
+    scatta = 1;
+    count ++;
+    if (count >= finish)
+      setStato(S1);
+  }
+}
+
+void Stato::scattato() {
+  scatta = 0;
+}
+
+boolean Stato::getScattato() {
+  return scatta;
+}
+
+int Stato::getStatoName() {
+  switch (stato) {
+    case S31:
+      return 11;
+    case S32:
+      return 12;
+    case S33:
+      return 13;
+    default:
+        return 11;
+  }
+}
+
+unsigned int Stato::timing() {
+  return int(millis() - start);
+}
+
+unsigned int Stato::getCount() {
+  return count;
 }
 

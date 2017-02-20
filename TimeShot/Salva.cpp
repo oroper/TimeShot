@@ -95,7 +95,7 @@ int Salva::getPEvery() {
 
 
 void Salva::setPEvery(int v) {
-  if (v < 0 )
+  if (v < 1 )
     EEPROM.write(pEveyAdd, 1);
   else if (v > 255)
     EEPROM.write(pEveyAdd, 255);
@@ -208,11 +208,14 @@ float Salva::getAFTime() {
 // time for AF
 void Salva::setAFTime(float v) {
   // vrify if the value is in the correct ragne
-  if (v > 0.3 && v <= 4.0) {
-    EEPROM.write(AFTimeAdd, byte(v * 10));
+  if (v < 0.3) {
+    EEPROM.write(AFTimeAdd, byte(3));
+  }
+  else if (v >= 4.0) {
+    EEPROM.write(AFTimeAdd, byte(40));
   }
   else { // For safety set a picture for minutes
-    EEPROM.write(AFTimeAdd, byte(10));
+    EEPROM.write(AFTimeAdd, byte(v * 10));
   }
 }
 
@@ -232,11 +235,14 @@ float Salva::getShoottime() {
 // Time of shoot
 void Salva::setShoottime(float v) {
   // verify if the stored value is in the range
-  if (v > 0.3 && v <= 4) {
-    EEPROM.write(shootTimeAdd, byte(v * 10));
+  if (v < 0.3) {
+    EEPROM.write(shootTimeAdd, byte(3));
+  }
+  else if (v >= 4.0) {
+    EEPROM.write(shootTimeAdd, byte(40));
   }
   else { // For safety set a picture for minutes
-    EEPROM.write(shootTimeAdd, byte(10));
+    EEPROM.write(shootTimeAdd, byte(v * 10));
   }
 }
 

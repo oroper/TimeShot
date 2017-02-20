@@ -174,6 +174,18 @@ String Languages::getString(int s) {
     //    if (language == 2)
     //      return "Stop";
   }
+  else if (s == 34) {
+    //    if (language == 1)
+    return "Scatti";
+    //    if (language == 2)
+    //      return "Scatti";
+  }
+  else if (s == 35) {
+    //    if (language == 1)
+    return "Tempo";
+    //    if (language == 2)
+    //      return "Timing";
+  }
 
   else if (s == 0) {
     return "";
