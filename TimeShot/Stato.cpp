@@ -88,10 +88,6 @@ void Stato::setStato(int s) {
       cursore = cursoreOld1;
     }
   }
-
-
-
-
 }
 
 // Clear the cursor value for change status
@@ -477,7 +473,7 @@ float Stato::getValueS21(int i) {
       return salva.getPMin();
     case 2:
       return salva.getPMax1();
-    default :
+    default:
       return 999;
   }
 }
@@ -485,9 +481,9 @@ float Stato::getValueS21(int i) {
 float Stato::getValueS22(int i) {
   switch (i) {
     case 1:
-      return salva.getPEvery();
+      return salva.getPEvery();     // NON RITORNA IL VALORE CORRETTO
     case 2:
-      return salva.getPMax2();        // NON RITORNA IL VALORE CORRETTO
+      return salva.getPMax2();
     default:
       return 999;
   }
@@ -534,15 +530,15 @@ float Stato::valSu(float f) {
       return f + 0.1;
     case S212:          // foto massime 1
     case S222:          // foto massime 2
-      return f + 10;
+      return f + 10.0;
     case S221:          // Foto al minuto
     case S232:          // Durata video
     case S233:          // Fotogrammi
-      return f + 1;
+      return f + 1.0;
     case S231:          // Durata evento
-      return f + 5;
+      return f + 5.0;
     default:
-      return f + 1;
+      return f + 1.0;
   }
 }
 
@@ -609,14 +605,58 @@ void Stato::salvaVal(float f) {
   }
 }
 
+boolean Stato::isStart() {
+  switch (stato) {
+    case S31:
+    case S32:
+    case S33:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+boolean Stato::isMenu() {
+  switch (stato) {
+    case S1:
+    case S21:
+    case S22:
+    case S23:
+    case S24:
+    case S25:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+// stato di modifica valore
+boolean Stato::isChange() {
+  switch (stato) {
+    case S211:
+    case S212:
+    case S221:
+    case S222:
+    case S231:
+    case S232:
+    case S233:
+    case S241:
+    case S242:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
 void Stato::startPPM() { // foto al minuto
   setStato(S31);
   start = millis();   // Time di quando iniziato
   last = start;
-  delta = salva.getPMin() * 60000; // moltiplico un minuto per il valore di foto al minuto
+  delta = int (60000 / salva.getPMin()); // moltiplico un minuto per il valore di foto al minuto
   count = 0;   // Quante foto sono state fatte
   finish = salva.getPMax1();  // quante foto da fare per terminare
 }
+
 void Stato::startPEM() {   // foto ogni x minuti
   setStato(S32);
   start = millis();   // Time di quando iniziato
@@ -635,14 +675,15 @@ void Stato::startVideo() { // foto per video
   count = 0;   // Quante foto sono state fatte
 }
 
-void Stato::shooting() {
-  if (millis() > last + delta) {
+boolean Stato::shooting() {
+  if (millis() > (last + delta)) {
     last = millis();
-    scatta = 1;
     count ++;
+    return 1;
     if (count >= finish)
       setStato(S1);
   }
+  return 0;
 }
 
 void Stato::scattato() {
@@ -662,15 +703,30 @@ int Stato::getStatoName() {
     case S33:
       return 13;
     default:
-        return 11;
+      return 11;
   }
 }
 
-unsigned int Stato::timing() {
-  return int(millis() - start);
+unsigned long Stato::timing() {
+  return millis() - start;
+}
+
+void Stato::reset() {
+  setStato(S1);
+  cursore = 1;
+  cursoreOld = 1;
+  cursoreOld1 = 1;
 }
 
 unsigned int Stato::getCount() {
   return count;
+}
+
+int Stato::getFTime() {
+  return int (salva.getAFTime() * 1000);
+}
+
+int Stato::getShoottime() {
+  return int (salva.getShoottime() * 1000);
 }
 

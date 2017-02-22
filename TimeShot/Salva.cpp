@@ -83,28 +83,21 @@ void Salva::setPMax1(int v) {
 
 // Picture every x minutes
 int Salva::getPEvery() {
-  static int m = EEPROM.read(pEveyAdd);
-
-  if (m < 1) {
-    setPEvery(1);
-    return 1;
-  }
-  else
-    return m;
+  return EEPROM.read(pEveyAdd);
 }
 
 
 void Salva::setPEvery(int v) {
   if (v < 1 )
     EEPROM.write(pEveyAdd, 1);
-  else if (v > 255)
+  else if (v > 60)
     EEPROM.write(pEveyAdd, 255);
   else
     EEPROM.write(pEveyAdd, byte(v));
 }
 
 int Salva::getPMax2() {
-  return EEPROM.read(pEveyAdd);
+  return EEPROM.read(pMax2Add) * 10;
 }
 
 // max picture 2

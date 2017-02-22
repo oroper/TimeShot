@@ -15,9 +15,27 @@ Languages languages;
 Stato stato;
 Encoder encoder;
 
+const int focusaPin = 7;
+const int shootPin = 8;
+
+int minut = 99;
+int sec = 99;
+int scatti = 99;
+
+boolean primo = 1;
+
 LiquidCrystal_I2C lcd(0x3F, col, row);
 
 void setup() {
+
+  // set Pin for optocupter for AF
+  pinMode(focusaPin, OUTPUT);
+  digitalWrite(focusaPin, LOW);
+
+  // set Pin for optocupter for shoot
+  pinMode(shootPin, OUTPUT);
+  digitalWrite(shootPin, LOW);
+
   // set Pin that corrispons to the rotation to right of the encoder
   pinMode(PinCL, INPUT);
   digitalWrite(PinCL, HIGH);
@@ -38,6 +56,8 @@ void setup() {
 
   lcd.clear();
 
+  encoder.azzera();
+
   boot();
   delay(500);
   aggiorna();
@@ -48,23 +68,33 @@ void setup() {
 
 void loop() {
 
-  if (stato.getStato() == 300) {
-    if (stato.getScattato())
+  if (stato.isStart()) {
+    esecuzione();
+    if (stato.shooting())
       scatta();
     else if (encoder.getSu()) {
+      stato.reset();
       encoder.azzera();
+      primo = 1;
+      aggiorna();
+      delay(500);
     }
     else if (encoder.getGiu()) {
+      stato.reset();
       encoder.azzera();
+      primo = 1;
+      aggiorna();
+      delay(500);
     }
     else if (encoder.pressed()) {
-      stato.setStato(100);
+      stato.reset();
       encoder.azzera();
-      delay(1000);
+      primo = 1;
+      aggiorna();
+      delay(500);
     }
-    esecuzione();
   }
-  else if (stato.getStato() % 10 == 0) {
+  else if (stato.isMenu()) {
     if (encoder.getSu()) {
       stato.su();
       aggiorna();
@@ -75,10 +105,10 @@ void loop() {
     }
     else if (encoder.pressed()) {
       stato.confirm();
-      if (stato.getStato() % 10 == 0) {
+      if (stato.isMenu() && !stato.isStart()) {
         aggiorna();
       }
-      delay(1000);
+      delay(500);
     }
   }
   // modifica di un valore
@@ -119,12 +149,7 @@ void aggiorna() {
 // This function Print on LCD the menu field in the correct positions
 void printStato() {
   static int i;
-  /*
-    lcd.setCursor(1, 0);
-    lcd.print(languages.getString(stato.getPrint(1)));
-    lcd.setCursor(1, 1);
-    lcd.print(languages.getString(stato.getPrint(2)));
-  */
+
   // for each row of LCD print the correct voices of menu
   for (i = 0; i < row; i++) {
     lcd.setCursor(1, i);
@@ -179,22 +204,47 @@ void isr() {
 }
 
 void esecuzione() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(languages.getString(stato.getStatoName()));
-  lcd.setCursor(0, 1);
-  lcd.print(languages.getString(34)); // scatti
-  lcd.setCursor(10, 1);
-  lcd.print(stato.getCount()); // scatti
-  lcd.setCursor(0, 2);
-  lcd.print(languages.getString(35)); // tempo
-  lcd.setCursor(10, 2);
-  lcd.print(stato.timing() / 1000 / 60);
-  lcd.print(":");
-  lcd.print((stato.timing() / 1000) % 60);
+  if (primo) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(languages.getString(stato.getStatoName()));
+    lcd.setCursor(0, 1);
+    lcd.print(languages.getString(34)); // scatti
+  }
+
+  if (scatti != stato.getCount()) {
+    lcd.setCursor(10, 1);
+    lcd.print(stato.getCount()); // scatti
+  }
+
+  if (primo) {
+    lcd.setCursor(0, 2);
+    lcd.print(languages.getString(35)); // tempo
+    primo = 0;
+  }
+
+  if (minut != (stato.timing() / 1000 / 60)) {
+    lcd.setCursor(10, 2);
+    lcd.print(stato.timing() / 1000 / 60);
+    lcd.print(":");
+  }
+
+  if (sec != ((stato.timing() / 1000) % 60))
+    lcd.print(((stato.timing() / 1000) % 60) / 10);
+  lcd.print(((stato.timing() / 1000) % 60) % 10);
+  delay(100);
 }
 
-void scatta(){
-  
+void scatta() {
+
+  digitalWrite(focusaPin, HIGH);
+  delay(stato.getFTime());
+  digitalWrite(shootPin, HIGH);
+  delay(stato.getShoottime());
+
+  digitalWrite(focusaPin, LOW);
+  digitalWrite(shootPin, LOW);
+
+  stato.scattato();
 }
 

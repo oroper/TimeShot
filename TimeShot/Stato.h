@@ -85,8 +85,17 @@ class Stato {
     int getStatoName();
     unsigned int getCount();
 
-    void shooting();
-    unsigned int timing();
+    boolean shooting();
+    unsigned long timing();
+
+    int getFTime();
+    int getShoottime();
+
+    boolean isStart();
+    boolean isMenu();
+    boolean isChange();
+
+    void reset();
 
   private:
 
@@ -99,8 +108,8 @@ class Stato {
     int comInt;
     float comFloat;
 
-    unsigned int start;   // Time di quando iniziato
-    unsigned int last;     // Ultimo scatto
+    unsigned long start;   // Time di quando iniziato
+    unsigned long last;     // Ultimo scatto
     unsigned int delta;   // ogni quanti milli secondi scattare
     unsigned int count;   // Quante foto sono state fatte
     unsigned int finish;  // quante foto da fare per terminare
