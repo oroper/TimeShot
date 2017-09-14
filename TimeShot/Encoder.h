@@ -5,7 +5,7 @@
 
 #define PinCL 2   // Pin of right encoder rotation (interrupt 0)
 #define PinDT 3   // Pin of left encoder rotation (interrupt 1)
-#define PinSW 12  // Button pin
+#define PinSW 4  // Button pin
 
 class Encoder
 {

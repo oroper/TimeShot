@@ -186,7 +186,12 @@ String Languages::getString(int s) {
     //    if (language == 2)
     //      return "Timing";
   }
-
+  else if (s == 4) {
+    //    if (language == 1)
+    return "Fine";
+    //    if (language == 2)
+    //      return "End";
+  }
   else if (s == 0) {
     return "";
   }

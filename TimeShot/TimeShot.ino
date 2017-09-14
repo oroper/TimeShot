@@ -67,33 +67,32 @@ void setup() {
 }
 
 void loop() {
-
+  // ---------------------------------------------------- Scatto
   if (stato.isStart()) {
     esecuzione();
-    if (stato.shooting())
-      scatta();
-    else if (encoder.getSu()) {
-      stato.reset();
-      encoder.azzera();
-      primo = 1;
-      aggiorna();
-      delay(500);
+    switch (stato.shooting()) {
+      case 0:
+        if (encoder.getSu() or encoder.getGiu() or encoder.pressed()) { // se premo qualcosa esce dalla esecuzione degli scatti
+          stato.reset();
+          encoder.azzera();
+          primo = 1;
+          aggiorna();
+        }
+        break;
+      case 1:
+        scatta();
+        break;
+      case 2:
+        scatta();
+        aggiorna();
+        break;
+      default:
+        break;
     }
-    else if (encoder.getGiu()) {
-      stato.reset();
-      encoder.azzera();
-      primo = 1;
-      aggiorna();
-      delay(500);
-    }
-    else if (encoder.pressed()) {
-      stato.reset();
-      encoder.azzera();
-      primo = 1;
-      aggiorna();
-      delay(500);
-    }
+    delay(500);
+
   }
+  // ----------------------------------------------------- Menu
   else if (stato.isMenu()) {
     if (encoder.getSu()) {
       stato.su();
@@ -117,13 +116,11 @@ void loop() {
     while (!encoder.pressed()) {
       if (encoder.getSu()) {
         encoder.azzera();
-        printVal(stato.getPos(), stato.valSu(f));
-        f = stato.valSu(f);
+        printVal(stato.getPos(), f = stato.valSu(f));
       }
       else if (encoder.getGiu()) {
         encoder.azzera();
-        printVal(stato.getPos(), stato.valGiu(f));
-        f = stato.valGiu(f);
+        printVal(stato.getPos(), f = stato.valGiu(f));
       }
     }
     stato.salvaVal(f);
@@ -136,9 +133,11 @@ void loop() {
 void aggiorna() {
   lcd.clear();
 
+  if (stato.getStato() != S4){
   // Set cursor rispect the row of the LCD
   lcd.setCursor(0, (stato.getCursor() % row) - 1 ); // get the cursor position, keep the module and reduce 1, I obtain the row position in the LCD
   lcd.write(byte(5));
+  }
 
   // Print the string of current position
   printStato();
@@ -204,6 +203,7 @@ void isr() {
 }
 
 void esecuzione() {
+  
   if (primo) {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -247,4 +247,3 @@ void scatta() {
 
   stato.scattato();
 }
-

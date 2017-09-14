@@ -12,6 +12,7 @@
 // stato 2_4: menu impostazioni        3 opzioni  codifica: 240
 // stato 2_5: menu lingua              lingue + 1 codifica: 250
 // stato 3:   schermata running        3 opzioni  codifica: 300
+// stato 4:   Schermata di fine        3 opzioni  codifica: 400
 
 #define S1 100
 #define S21 210
@@ -22,6 +23,8 @@
 #define S31 310
 #define S32 320
 #define S33 330
+#define S33 330
+#define S4 400
 
 #define S211 211  // Modifica valore foto per minuto
 #define S212 212  // Modifica valore foto max1
@@ -67,6 +70,7 @@ class Stato {
     void stato2_4();
     void stato2_5();
     void stato3();
+    void stato4();
 
     void startPPM();    // foto al minuto
     void startPEM();    // foto ogni x minuti
@@ -85,7 +89,7 @@ class Stato {
     int getStatoName();
     unsigned int getCount();
 
-    boolean shooting();
+    int shooting();
     unsigned long timing();
 
     int getFTime();
@@ -131,6 +135,7 @@ class Stato {
     int getPrintS23(int);
     int getPrintS24(int);
     int getPrintS25(int);
+    int getPrintS4(int);
 
     float getValueS21(int);
     float getValueS22(int);

@@ -11,6 +11,7 @@
 // stato 2_4: menu impostazioni - 3 opzioni
 // stato 2_5: menu lingua - lingua opzioni + 1
 // stato 3: schermata running - 3 opzioni
+// stato 4: Fine scatti
 
 // inizialize the object
 Stato::Stato() {
@@ -114,6 +115,8 @@ byte Stato::getOptions() {
     case S32:
     case S33:
       return 3;
+    default:
+      return 0;
   }
 }
 
@@ -137,6 +140,10 @@ void Stato::confirm() {
       break;
     case S25:
       stato2_5();
+      break;
+    case S4:
+      stato4();
+      cursore = 1;
       break;
     default:
       break;
@@ -180,6 +187,8 @@ int Stato::getPrint(int i) {
       return getPrintS24(i);
     case S25:
       return getPrintS25(i);
+    case S4:
+      return getPrintS4(i);
     default:
       return getPrintS1(i);
   }
@@ -318,6 +327,15 @@ int Stato::getPrintS25(int i) {
   }
 }
 
+// finale
+int Stato::getPrintS4(int i) {
+  switch (i){
+    case 2:
+      return 4;
+    default:
+      return 0;
+  }
+}
 
 int Stato::getPrintS1(int i) {
   switch (cursore) {
@@ -447,6 +465,10 @@ void Stato::stato2_5() {
 void Stato::stato3() {
 }
 
+void Stato::stato4() {
+  setStato(S1);
+}
+
 // return if the value of voice is int or float or no values
 float Stato::getValue(int i) {
 
@@ -550,15 +572,15 @@ float Stato::valGiu(float f) {
       return f - 0.1;
     case S212:          // foto massime 1
     case S222:          // foto massime 2
-      return f - 10;
+      return f - 10.0;
     case S221:          // Foto al minuto
     case S232:          // Durata video
     case S233:          // Fotogrammi
-      return f - 1;
+      return f - 1.0;
     case S231:          // Durata evento
-      return f - 5;
+      return f - 5.0;
     default:
-      return f - 1;
+      return f - 1.0;
   }
 }
 
@@ -610,6 +632,7 @@ boolean Stato::isStart() {
     case S31:
     case S32:
     case S33:
+    //case S4:
       return 1;
     default:
       return 0;
@@ -624,6 +647,7 @@ boolean Stato::isMenu() {
     case S23:
     case S24:
     case S25:
+    case S4:
       return 1;
     default:
       return 0;
@@ -675,13 +699,15 @@ void Stato::startVideo() { // foto per video
   count = 0;   // Quante foto sono state fatte
 }
 
-boolean Stato::shooting() {
-  if (millis() > (last + delta)) {
+int Stato::shooting() {
+  if (millis() > (last + delta) and count < finish) {
     last = millis();
     count ++;
+    if (count >= finish){
+      setStato(S4);
+      return 2;
+    }
     return 1;
-    if (count >= finish)
-      setStato(S1);
   }
   return 0;
 }
